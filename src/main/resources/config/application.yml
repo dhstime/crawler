@@ -61,3 +61,12 @@ mybatis:
   mapper-locations: classpath:mapping/*/*.xml
   #实体类
   
+# 配置beetl路径
+beetl: 
+  # 路径配置
+  configPath: classpath:beetl/beetl.properties
+  # 返回类型配置
+  contentType: text/html;charset=UTF-8
+  # 设置后缀
+  suffix: .html
+  

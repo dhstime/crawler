@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * <br><b>Date: 2019年3月8日 下午1:43:00 </b> 
  */
 @Configuration
-@ComponentScan(basePackages = "com.vedeng.controller,com.vedeng.service")
+@ComponentScan(basePackages = "com.vedeng.config,com.vedeng.controller,com.vedeng.service")
 @MapperScan("com.vedeng.dao")
 @EnableAutoConfiguration
 public class AppStart
