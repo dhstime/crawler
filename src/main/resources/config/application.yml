@@ -1,0 +1,64 @@
+server:
+  # 配置端口号
+  port: 9091
+
+#配置日志文件
+logging:
+  config: classpath:log/log4j2.xml
+  
+#spring的配置
+spring:
+  #数据源配置
+  datasource:
+    url: jdbc:mysql://172.16.3.50:3306/dev-auto?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: franlin.mysql.5.6
+    # 使用druid数据源连接池
+    type:  com.alibaba.druid.pool.DruidDataSource
+    #加载驱动
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+  #redis配置
+  redis:
+    # Redis服务器地址
+    host: 172.16.3.50
+    # Redis服务器连接端口
+    port: 6379
+    # Redis数据库索引（默认为0）
+    database: 0
+    #password: 这里是redis的密码
+    #连接超时时间（毫秒）
+    timeout: 3600
+    ## springboot 中redis默认使用lettuce, 本系统使用jedis, 如果要用默认的,配置上只需要将jedis换成lettuce即可 
+    jedis: 
+      pool: 
+        # 连接池最大连接数（使用负值表示没有限制） 
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接 
+        min-idle: 0
+
+  
+  
+#配置mybatis
+mybatis:
+  #一定要对应mapper映射xml文件的所在路径 
+  mapper-locations: classpath:mapping/*/*.xml
+  #实体类
+  type-aliases-package: com.franlin.model
+  
