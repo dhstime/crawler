@@ -4,6 +4,7 @@ import com.vedeng.crawler.common.annotation.Extract;
 import com.vedeng.crawler.common.annotation.SeleniumDocument;
 import com.vedeng.crawler.common.queue.QueueGenerationService;
 import com.vedeng.crawler.common.queue.QueueTaskHandler;
+import com.vedeng.crawler.model.ChnRegister;
 import com.vedeng.crawler.model.CrawlerErrorLog;
 import com.vedeng.crawler.service.crawler.CrawlerService;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ public class CrawlerUtils {
 
     @Autowired
     private QueueGenerationService queueGenerationService;
+
     /**
     *获取连接
     * @Author:strange
@@ -80,19 +82,19 @@ public class CrawlerUtils {
         if(StringUtils.isBlank(url)){
             throw new RuntimeException("未指定爬取目标url");
         }
-        FirefoxDriver driver = creatConnect(url);
         Integer nowpageNumber = 1;
+        FirefoxDriver driver = creatConnect(url);
         try {
             //获取类上的css选择器
-            String cssQuery = seleniumDocument.cssQuery();
-            String targetUrl = seleniumDocument.targetUrl();
-            List<WebElement> elements = driver.findElementsByClassName(cssQuery);
-            for (WebElement element : elements) {
-                if(element.getText().contains(targetUrl)) {
-                    WebElement element1 = element.findElement(By.tagName("a"));
-                    onClick(element1,driver);
-                }
-            }
+//            String cssQuery = seleniumDocument.cssQuery();
+//            String targetUrl = seleniumDocument.targetUrl();
+//            List<WebElement> elements = driver.findElementsByClassName(cssQuery);
+//            for (WebElement element : elements) {
+//                if(element.getText().contains(targetUrl)) {
+//                    WebElement element1 = element.findElement(By.tagName("a"));
+//                    onClick(element1,driver);
+//                }
+//            }
         Integer pageNumber = getPageNumber(driver,pageNumberCss);
         if(statrNum != null && statrNum > 0){
             nowpageNumber = statrNum;
@@ -105,7 +107,7 @@ public class CrawlerUtils {
                 if(!CollectionUtils.isEmpty(childPageList)) {
                     logger.info(seleniumDocument.clazzName() + ":" + (nowpageNumber) + "页耗时: " + (l1 - l) + " 总计:" + childPageList.size() + "条");
                 }
-                if(nextFlag || nowpageNumber >5){
+                if(nextFlag){
                     break;
                 }
                 nowpageNumber++;
@@ -113,6 +115,8 @@ public class CrawlerUtils {
             }
         }catch (Exception e){
             logger.error("execute className:{},pageNum:{},error:{}",clazz.getName(),nowpageNumber,e);
+            CrawlerErrorLog crawlerErrorLog = new CrawlerErrorLog(clazz.getName(),nowpageNumber,2);
+            crawlerService.saveCrawlerErrorLog(crawlerErrorLog);
         }finally {
             driver.quit();
             return nowpageNumber;
@@ -129,7 +133,6 @@ public class CrawlerUtils {
             countList.add(webElement.getAttribute("href"));
         }
         for (String title : countList) {
-//            long l = System.currentTimeMillis();
             //跳转详情页
             driver.executeScript(title);
             //获取字段数据
@@ -158,9 +161,7 @@ public class CrawlerUtils {
                 logger.error("addData error:{]",e);
             }
             //回退
-//            long l1 = System.currentTimeMillis();
             rollback(driver,rollBackCss);
-//            logger.info("子页面获取时间 "+(l1-l));
         }
         }catch (Exception e){
             logger.error("getChildPage className:{},pageNumber:{},error:{}",clazz.getName(),nowpageNumber,e);
@@ -226,6 +227,42 @@ public class CrawlerUtils {
 
     }
 
+    public List<Integer> execute(Class<?> clazz, List<CrawlerErrorLog> crgList,List<Integer> idList) {
+        SeleniumDocument seleniumDocument = clazz.getAnnotation(SeleniumDocument.class);
+        if(seleniumDocument == null){
+            throw new RuntimeException("该实体类不是爬虫实体类");
+        }
+        String url = seleniumDocument.domain();
+        if(StringUtils.isBlank(url)){
+            throw new RuntimeException("未指定爬取目标url");
+        }
+        FirefoxDriver driver = creatConnect(url);
+        try {
+            Thread.sleep(2000L);
+        }catch (Exception e){
+
+        }
+        for (CrawlerErrorLog crawlerErrorLog : crgList) {
+            long l = System.currentTimeMillis();
+            ArrayList<String> childPageList = new ArrayList<>();
+            try {
+                nextPage(driver,crawlerErrorLog.getPageNum());
+                childPageList = getChildPage(driver,clazz,seleniumDocument,crawlerErrorLog.getPageNum());
+            }catch (Exception e){
+                logger.error("补偿失败 className:{},pageNumber:{},error:{}",clazz.getName(),crawlerErrorLog.getPageNum(),e);
+            }
+
+            if(!CollectionUtils.isEmpty(childPageList)){
+                idList.add(crawlerErrorLog.getCrawlerErrorLogId());
+            }
+            long l1 = System.currentTimeMillis();
+            if(!CollectionUtils.isEmpty(childPageList)) {
+                logger.info(seleniumDocument.clazzName() + ":" + (crawlerErrorLog.getPageNum()) + "页耗时: " + (l1 - l) + " 总计:" + childPageList.size() + "条");
+            }
+        }
+        driver.quit();
+        return idList;
+    }
 }
 
 

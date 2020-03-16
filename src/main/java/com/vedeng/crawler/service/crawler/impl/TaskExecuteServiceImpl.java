@@ -31,7 +31,7 @@ public class TaskExecuteServiceImpl implements TaskExecuteService {
     @Autowired
     private CrawlerService crawlerService;
 
-    private ExecutorService service = new ThreadPoolExecutor(5, 5,
+    private ExecutorService service = new ThreadPoolExecutor(2, 2,
             0L, TimeUnit.MILLISECONDS,  new LinkedBlockingQueue<Runnable>(1024),
             new ThreadFactoryBuilder().setNameFormat("TaskExecute-pool-%d").build(), new ThreadPoolExecutor.AbortPolicy());
     /**
@@ -55,19 +55,17 @@ public class TaskExecuteServiceImpl implements TaskExecuteService {
                     public void run() {
                         Integer pageNum = 0;
                         try{
-                            pageNum = crawlerUtils.execute(aClass, 1, false);
+                             pageNum = crawlerUtils.execute(aClass, 1, false);
                         }catch (Exception e){
                             log.error("TaskExecuteService pageNum:{},class:{},error:{}",pageNum,aClass.getName(),e);
-                            CrawlerErrorLog crawlerErrorLog = new CrawlerErrorLog(aClass.getName(),pageNum,2);
-                            crawlerService.saveCrawlerErrorLog(crawlerErrorLog);
                         }
                     }
                 }),"TaskExecute thread");
             }
 
-            Thread thread = new DaemonT();
-            thread.setDaemon(true);
-            thread.start();
+//            Thread thread = new DaemonT();
+//            thread.setDaemon(true);
+//            thread.start();
         }
     }
     public class DaemonT extends Thread{
@@ -75,7 +73,7 @@ public class TaskExecuteServiceImpl implements TaskExecuteService {
         public void run() {
             try {
                 while (checkServiceRun()){
-                    Thread.sleep(600000L);
+                    Thread.sleep(2000L);
                     log.info("DaemonT++++"+checkServiceRun());
                 }
             }catch (Exception e){

@@ -14,7 +14,8 @@ import java.util.Date;
 * @Date:13:01 2020-03-06
 */
 @SeleniumDocument(
-        domain = "http://app1.sfda.gov.cn/datasearchcnda/face3/dir.html",
+//        domain = "http://app1.sfda.gov.cn/datasearchcnda/face3/dir.html",
+        domain = "http://app1.sfda.gov.cn/datasearchcnda/face3/base.jsp?tableId=26&tableName=TABLE26&title=%B9%FA%B2%FA%D2%BD%C1%C6%C6%F7%D0%B5%B2%FA%C6%B7%A3%A8%D7%A2%B2%E1%A3%A9&bcId=152904417281669781044048234789",
         targetUrl = "国产医疗器械产品（注册）",
         cssQuery = "new_datafont1",
         partTitle = "注准",rollBackCss = "javascript:viewList()",

@@ -31,7 +31,7 @@ public class QueueGenerationService {
     * @Author:strange
     * @Date:21:37 2020-03-07
     */
-    private ExecutorService service = new ThreadPoolExecutor(4, 4,
+    private ExecutorService service = new ThreadPoolExecutor(6, 6,
             0L, TimeUnit.MILLISECONDS,  new LinkedBlockingQueue<Runnable>(1024),
             new ThreadFactoryBuilder().setNameFormat("QueueTaskHandler-pool-%d").build(), new ThreadPoolExecutor.AbortPolicy());
 

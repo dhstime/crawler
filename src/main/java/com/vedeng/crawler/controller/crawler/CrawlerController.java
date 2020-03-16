@@ -43,20 +43,49 @@ public class CrawlerController extends BaseController {
     public Integer init(){
         List<Class> classList = new ArrayList<>();
         classList.add(ForeRegister.class);
-//        classList.add(ForeRecord.class);
-//        classList.add(ChnRecord.class);
+        classList.add(ForeRecord.class);
+        classList.add(ChnRecord.class);
         classList.add(ChnRegister.class);
         taskExecuteService.execute(classList);
         return 0;
     }
-    @RequestMapping("/frinit")
-    public Integer frinit(Integer pageNum){
-        Integer num = crawlerUtils.execute(ForeRegister.class, pageNum,true);
-//        Integer num = crawlerUtils.execute(ForeRecord.class, pageNum,true);
-//        Integer num = crawlerUtils.execute(ChnRecord.class,pageNum,true);
-//        Integer num = crawlerUtils.execute(ChnRegister.class, pageNum,true);
-//        CrawlerErrorLog crawlerErrorLog = new CrawlerErrorLog(ChnRegister.class.getName(),2);
-//        Integer integer = crawlerService.saveCrawlerErrorLog(crawlerErrorLog);
+    @RequestMapping("/frginit")
+    public Integer frginit(Integer pageNum,Integer type){
+        boolean flag =  getFlag(type);
+        //1296完结
+        Integer num = crawlerUtils.execute(ForeRegister.class, pageNum,flag);
         return num;
+    }
+    @RequestMapping("/crginit")
+    public Integer crginit(Integer pageNum,Integer type){
+        boolean flag =  getFlag(type);
+        //1462
+        Integer num = crawlerUtils.execute(ChnRegister.class, pageNum,flag);
+        return num;
+    }
+    @RequestMapping("/crinit")
+    public Integer crinit(Integer pageNum,Integer type){
+        boolean flag =  getFlag(type);
+        //  3
+        Integer num = crawlerUtils.execute(ChnRecord.class, pageNum,flag);
+        return num;
+    }
+    @RequestMapping("/frinit")
+    public Integer frinit(Integer pageNum,Integer type){
+        boolean flag =  getFlag(type);
+        //3
+        Integer num = crawlerUtils.execute(ForeRecord.class, pageNum,flag);
+        return num;
+    }
+    @RequestMapping("/checkCrawler")
+    public void checkCrawler(){
+        crawlerService.checkCrawler();
+    }
+    private boolean getFlag(Integer type) {
+        boolean flag = false;
+        if(type!= null && type.equals(1)){
+            flag = true;
+        }
+        return flag;
     }
 }

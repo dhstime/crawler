@@ -158,4 +158,29 @@
       OPT_TYPE = #{optType,jdbcType=BIT}
     where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
   </update>
+  <select id="getErrorList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+  FROM
+	V_CRAWLER_ERROR_LOG A
+    WHERE
+	A.IS_ENABLE = 0
+	<if test="type == 'ChnRegister'">
+	AND A.CLASS_NAME = 'com.vedeng.crawler.model.ChnRegister'
+    </if>
+    <if test="type == 'ChnRecord'">
+      AND A.CLASS_NAME = 'com.vedeng.crawler.model.ChnRecord'
+    </if>
+    <if test="type == 'ForeRecord'">
+      AND A.CLASS_NAME = 'com.vedeng.crawler.model.ForeRecord'
+    </if>
+    <if test="type == 'ForeRegister'">
+      AND A.CLASS_NAME = 'com.vedeng.crawler.model.ForeRegister'
+    </if>
+  </select>
+  <update id="updateEnable">
+    UPDATE V_CRAWLER_ERROR_LOG
+    SET IS_ENABLE = 1
+   where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
+  </update>
 </mapper>

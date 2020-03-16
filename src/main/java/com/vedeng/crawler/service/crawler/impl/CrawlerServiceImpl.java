@@ -1,14 +1,19 @@
 package com.vedeng.crawler.service.crawler.impl;
 
+import com.vedeng.crawler.common.utils.CrawlerUtils;
 import com.vedeng.crawler.mapper.*;
 import com.vedeng.crawler.model.*;
 import com.vedeng.crawler.service.crawler.CrawlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -30,6 +35,9 @@ public class CrawlerServiceImpl implements CrawlerService {
 
     @Resource
     private CrawlerErrorLogMapper crawlerErrorLogMapper;
+
+    @Autowired
+    private CrawlerUtils crawlerUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -112,7 +120,32 @@ public class CrawlerServiceImpl implements CrawlerService {
 
     @Override
     public void checkCrawler() {
-
+        List<Integer> idlist = new ArrayList<>();
+        //获取国产注册失败页数
+       List<CrawlerErrorLog> crgList =  crawlerErrorLogMapper.getErrorList("ChnRegister");
+       if(!CollectionUtils.isEmpty(crgList)) {
+           crawlerUtils.execute(ChnRegister.class, crgList, idlist);
+       }
+       //获取国产备案页数
+        List<CrawlerErrorLog> crList =  crawlerErrorLogMapper.getErrorList("ChnRecord");
+       if(!CollectionUtils.isEmpty(crList)) {
+           crawlerUtils.execute(ChnRecord.class, crList, idlist);
+       }
+        //获取进口注册失败页数
+        List<CrawlerErrorLog> frgList =  crawlerErrorLogMapper.getErrorList("ForeRegister");
+       if(!CollectionUtils.isEmpty(frgList)) {
+           crawlerUtils.execute(ForeRegister.class, frgList, idlist);
+       }
+        //获取进口备案页数
+        List<CrawlerErrorLog> frList =  crawlerErrorLogMapper.getErrorList("ForeRecord");
+       if(!CollectionUtils.isEmpty(frList)) {
+           crawlerUtils.execute(ForeRecord.class, frList, idlist);
+       }
+        if(!CollectionUtils.isEmpty(idlist)) {
+            for (Integer id : idlist) {
+                crawlerErrorLogMapper.updateEnable(id);
+            }
+        }
     }
 
 }
