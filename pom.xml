@@ -99,7 +99,31 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.56</version>
 		</dependency>
-	</dependencies>
+	  <!--selenium-->
+	  <dependency>
+		  <groupId>org.seleniumhq.selenium</groupId>
+		  <artifactId>selenium-java</artifactId>
+		  <version>3.4.0</version>
+	  </dependency>
+	  <!-- 启动浏览器需要的特点jar包-->
+	  <dependency>
+		  <groupId>com.google.guava</groupId>
+		  <artifactId>guava</artifactId>
+		  <version>22.0</version>
+	  </dependency>
+	  <!--selenium-->
+	  <dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
+		  <version>3.9</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>com.ctrip.framework.apollo</groupId>
+		  <artifactId>apollo-client</artifactId>
+		  <version>1.4.0</version>
+	  </dependency>
+
+  </dependencies>
 	<build>
 		<pluginManagement>
 			<plugins>

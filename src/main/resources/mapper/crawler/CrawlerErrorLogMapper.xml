@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vedeng.crawler.mapper.CrawlerErrorLogMapper" >
+  <resultMap id="BaseResultMap" type="com.vedeng.crawler.model.CrawlerErrorLog" >
+    <!--          -->
+    <id column="CRAWLER_ERROR_LOG_ID" property="crawlerErrorLogId" jdbcType="INTEGER" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="PAGE_NUM" property="pageNum" jdbcType="INTEGER" />
+    <result column="IS_ENABLE" property="isEnable" jdbcType="BIT" />
+    <result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="MODE_TIME" property="modeTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATER" property="updater" jdbcType="VARCHAR" />
+    <result column="IS_DELETE" property="isDelete" jdbcType="BIT" />
+    <result column="OPT_TYPE" property="optType" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--          -->
+    CRAWLER_ERROR_LOG_ID, CLASS_NAME, PAGE_NUM, IS_ENABLE, ADD_TIME, CREATOR, MODE_TIME, 
+    UPDATER, IS_DELETE, OPT_TYPE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <!--          -->
+    select 
+    <include refid="Base_Column_List" />
+    from V_CRAWLER_ERROR_LOG
+    where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <!--          -->
+    delete from V_CRAWLER_ERROR_LOG
+    where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vedeng.crawler.model.CrawlerErrorLog" >
+    <!--          -->
+    insert into V_CRAWLER_ERROR_LOG (CRAWLER_ERROR_LOG_ID, CLASS_NAME, PAGE_NUM, 
+      IS_ENABLE, ADD_TIME, CREATOR, 
+      MODE_TIME, UPDATER, IS_DELETE, 
+      OPT_TYPE)
+    values (#{crawlerErrorLogId,jdbcType=INTEGER}, #{className,jdbcType=VARCHAR}, #{pageNum,jdbcType=INTEGER}, 
+      #{isEnable,jdbcType=BIT}, #{addTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
+      #{modeTime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, #{isDelete,jdbcType=BIT}, 
+      #{optType,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vedeng.crawler.model.CrawlerErrorLog" >
+    <!--          -->
+    insert into V_CRAWLER_ERROR_LOG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="crawlerErrorLogId != null" >
+        CRAWLER_ERROR_LOG_ID,
+      </if>
+      <if test="className != null" >
+        CLASS_NAME,
+      </if>
+      <if test="pageNum != null" >
+        PAGE_NUM,
+      </if>
+      <if test="isEnable != null" >
+        IS_ENABLE,
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME,
+      </if>
+      <if test="creator != null" >
+        CREATOR,
+      </if>
+      <if test="modeTime != null" >
+        MODE_TIME,
+      </if>
+      <if test="updater != null" >
+        UPDATER,
+      </if>
+      <if test="isDelete != null" >
+        IS_DELETE,
+      </if>
+      <if test="optType != null" >
+        OPT_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="crawlerErrorLogId != null" >
+        #{crawlerErrorLogId,jdbcType=INTEGER},
+      </if>
+      <if test="className != null" >
+        #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNum != null" >
+        #{pageNum,jdbcType=INTEGER},
+      </if>
+      <if test="isEnable != null" >
+        #{isEnable,jdbcType=BIT},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="modeTime != null" >
+        #{modeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="optType != null" >
+        #{optType,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vedeng.crawler.model.CrawlerErrorLog" >
+    <!--          -->
+    update V_CRAWLER_ERROR_LOG
+    <set >
+      <if test="className != null" >
+        CLASS_NAME = #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNum != null" >
+        PAGE_NUM = #{pageNum,jdbcType=INTEGER},
+      </if>
+      <if test="isEnable != null" >
+        IS_ENABLE = #{isEnable,jdbcType=BIT},
+      </if>
+      <if test="addTime != null" >
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        CREATOR = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="modeTime != null" >
+        MODE_TIME = #{modeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null" >
+        UPDATER = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        IS_DELETE = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="optType != null" >
+        OPT_TYPE = #{optType,jdbcType=BIT},
+      </if>
+    </set>
+    where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vedeng.crawler.model.CrawlerErrorLog" >
+    <!--          -->
+    update V_CRAWLER_ERROR_LOG
+    set CLASS_NAME = #{className,jdbcType=VARCHAR},
+      PAGE_NUM = #{pageNum,jdbcType=INTEGER},
+      IS_ENABLE = #{isEnable,jdbcType=BIT},
+      ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      CREATOR = #{creator,jdbcType=VARCHAR},
+      MODE_TIME = #{modeTime,jdbcType=TIMESTAMP},
+      UPDATER = #{updater,jdbcType=VARCHAR},
+      IS_DELETE = #{isDelete,jdbcType=BIT},
+      OPT_TYPE = #{optType,jdbcType=BIT}
+    where CRAWLER_ERROR_LOG_ID = #{crawlerErrorLogId,jdbcType=INTEGER}
+  </update>
+</mapper>
