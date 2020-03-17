@@ -11,7 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +59,23 @@ public class CrawlerUtils {
     */
     @Bean
     @Scope(value = "prototype")
-    private   FirefoxDriver creatConnect(String url){
-        System.setProperty("webdriver.gecko.driver","/Users/dhs/Downloads/geckodriver");
-        FirefoxDriver  driver = new FirefoxDriver();
+    private   OperaDriver creatConnect(String url){
+        System.setProperty("webdriver.opera.driver","/Users/dhs/Downloads/operadriver");
+        OperaOptions options = new OperaOptions();
+//        System.setProperty("webdriver.gecko.driver","/Users/dhs/Downloads/geckodriver");
+//        FirefoxOptions options = new FirefoxOptions();
+//        System.setProperty("webdriver.chrome.driver","/Users/dhs/Downloads/chromedriver");
+//        ChromeOptions options = new ChromeOptions();
+        List<String> optionList = new ArrayList<>();
+        optionList.add("enable-automation");
+        options.addArguments("start-maximized");
+////        options.addPreference("excludeSwitches","enable-automation");
+////        options.addPreference("useAutomationExtension",false);
+        options.setExperimentalOption("excludeSwitches",optionList);
+        options.setExperimentalOption("useAutomationExtension",false);
+//        ChromeDriver driver = new ChromeDriver(options);
+//        FirefoxDriver driver = new FirefoxDriver(options);
+        OperaDriver driver = new OperaDriver(options);
         //页面加载超时时间设置为 10s
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         driver.get(url);
@@ -64,6 +83,10 @@ public class CrawlerUtils {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         return driver;
     }
+
+//    private void webSrc(ChromeDriver driver) {
+//        driver.executeScript("Object.defineProperties(navigator, {webdriver:{get:()=>undefined}});");
+//    }
 
 
     /**
@@ -83,9 +106,9 @@ public class CrawlerUtils {
             throw new RuntimeException("未指定爬取目标url");
         }
         Integer nowpageNumber = 1;
-        FirefoxDriver driver = creatConnect(url);
+        OperaDriver driver = creatConnect(url);
         try {
-            //获取类上的css选择器
+//           // 获取类上的css选择器
 //            String cssQuery = seleniumDocument.cssQuery();
 //            String targetUrl = seleniumDocument.targetUrl();
 //            List<WebElement> elements = driver.findElementsByClassName(cssQuery);
@@ -122,7 +145,7 @@ public class CrawlerUtils {
             return nowpageNumber;
         }
     }
-    private ArrayList<String> getChildPage(FirefoxDriver driver, Class<?> clazz,SeleniumDocument seleniumDocument,Integer nowpageNumber) {
+    private ArrayList<String> getChildPage(OperaDriver driver, Class<?> clazz,SeleniumDocument seleniumDocument,Integer nowpageNumber) {
         String rollBackCss = seleniumDocument.rollBackCss();
         String partTitle = seleniumDocument.partTitle();
         //子页面表格
@@ -175,7 +198,7 @@ public class CrawlerUtils {
      * @Author:strange
      * @Date:15:42 2020-03-09
      */
-    private FirefoxDriver nextPage(FirefoxDriver driver,Integer num)  {
+    private OperaDriver nextPage(OperaDriver driver,Integer num)  {
         driver.executeScript("javascript:devPage("+num+")");
         return  driver;
     }
@@ -184,7 +207,7 @@ public class CrawlerUtils {
      * @Author:strange
      * @Date:15:43 2020-03-09
      */
-    private void rollback(FirefoxDriver driver,String jsc) {
+    private void rollback(OperaDriver driver,String jsc) {
         driver.executeScript(jsc);
     }
     /**
@@ -197,34 +220,12 @@ public class CrawlerUtils {
         return JsExecutor;
     }
 
-    private Integer getPageNumber(FirefoxDriver driver,String jsc) {
+    private Integer getPageNumber(OperaDriver driver,String jsc) {
         WebElement element = driver.findElementByCssSelector(jsc);
         String text = element.getText();
         String[] split = text.split("/共");
         String[] split1 = split[1].split("页");
         return Integer.valueOf(split1[0]);
-    }
-
-    /**
-     *将内容写入指定文档
-     * @Author:strange
-     * @Date:17:22 2020-02-29
-     */
-    public static void write(String body,String fileName) throws Exception {
-        File dir = new File("/Users/dhs/Documents/jsoup");
-        File file = new File(dir,fileName);
-
-        RandomAccessFile raf = new RandomAccessFile(file,"rw");
-//        String file="abc/pw.txt";
-        FileOutputStream fos=new FileOutputStream(file);
-        BufferedOutputStream bos=new BufferedOutputStream(fos);
-        OutputStreamWriter osw =new OutputStreamWriter(bos, "utf-8");
-        //PrintWriter：是高级流，扩展了println方法和print
-        // true 自动清理缓存功能，每个println方法之后会执行一个flush方法
-        PrintWriter out=new PrintWriter(osw, true);
-        out.println(body);
-        out.close();
-
     }
 
     public List<Integer> execute(Class<?> clazz, List<CrawlerErrorLog> crgList,List<Integer> idList) {
@@ -236,7 +237,7 @@ public class CrawlerUtils {
         if(StringUtils.isBlank(url)){
             throw new RuntimeException("未指定爬取目标url");
         }
-        FirefoxDriver driver = creatConnect(url);
+        OperaDriver driver = creatConnect(url);
         try {
             Thread.sleep(2000L);
         }catch (Exception e){
@@ -262,6 +263,28 @@ public class CrawlerUtils {
         }
         driver.quit();
         return idList;
+    }
+
+    /**
+     *将内容写入指定文档
+     * @Author:strange
+     * @Date:17:22 2020-02-29
+     */
+    public static void write(String body,String fileName) throws Exception {
+        File dir = new File("/Users/dhs/Documents/jsoup");
+        File file = new File(dir,fileName);
+
+        RandomAccessFile raf = new RandomAccessFile(file,"rw");
+//        String file="abc/pw.txt";
+        FileOutputStream fos=new FileOutputStream(file);
+        BufferedOutputStream bos=new BufferedOutputStream(fos);
+        OutputStreamWriter osw =new OutputStreamWriter(bos, "utf-8");
+        //PrintWriter：是高级流，扩展了println方法和print
+        // true 自动清理缓存功能，每个println方法之后会执行一个flush方法
+        PrintWriter out=new PrintWriter(osw, true);
+        out.println(body);
+        out.close();
+
     }
 }
 

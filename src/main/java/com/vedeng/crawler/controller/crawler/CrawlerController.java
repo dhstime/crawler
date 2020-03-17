@@ -52,28 +52,28 @@ public class CrawlerController extends BaseController {
     @RequestMapping("/frginit")
     public Integer frginit(Integer pageNum,Integer type){
         boolean flag =  getFlag(type);
-        //1296完结
+        //完结
         Integer num = crawlerUtils.execute(ForeRegister.class, pageNum,flag);
         return num;
     }
     @RequestMapping("/crginit")
     public Integer crginit(Integer pageNum,Integer type){
         boolean flag =  getFlag(type);
-        //1462
+        //3878
         Integer num = crawlerUtils.execute(ChnRegister.class, pageNum,flag);
         return num;
     }
     @RequestMapping("/crinit")
     public Integer crinit(Integer pageNum,Integer type){
         boolean flag =  getFlag(type);
-        //  3
+        //  2941
         Integer num = crawlerUtils.execute(ChnRecord.class, pageNum,flag);
         return num;
     }
     @RequestMapping("/frinit")
     public Integer frinit(Integer pageNum,Integer type){
         boolean flag =  getFlag(type);
-        //3
+        //完结
         Integer num = crawlerUtils.execute(ForeRecord.class, pageNum,flag);
         return num;
     }
